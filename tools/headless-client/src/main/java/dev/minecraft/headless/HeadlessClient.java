@@ -24,8 +24,8 @@ public final class HeadlessClient {
     private static final String HOST = System.getenv().getOrDefault("MC_TEST_HOST", "127.0.0.1");
     private static final int PORT = Integer.parseInt(System.getenv().getOrDefault("MC_TEST_PORT", "25565"));
     private static final String USERNAME = System.getenv().getOrDefault("MC_TEST_USERNAME", "DevPlayer");
-    private static final String COMMAND = System.getenv().getOrDefault("MC_TEST_COMMAND", "/devkit status");
-    private static final String EXPECTED = System.getenv().getOrDefault("MC_TEST_EXPECTED", "ExamplePlugin status: OK");
+    private static final String[] COMMANDS = System.getenv().getOrDefault("MC_TEST_COMMAND", "/devkit status").split("\\|");
+    private static final String[] EXPECTED = System.getenv().getOrDefault("MC_TEST_EXPECTED", "ExamplePlugin status: OK").split("\\|");
 
     private HeadlessClient() { }
 
@@ -39,16 +39,22 @@ public final class HeadlessClient {
 
         CountDownLatch finished = new CountDownLatch(1);
         AtomicBoolean passed = new AtomicBoolean(false);
+        int[] step = {0};
         client.addListener(new SessionAdapter() {
             @Override
             public void packetReceived(Session session, Packet packet) {
                 if (packet instanceof ClientboundLoginPacket) {
                     System.out.println("headless: joined as " + USERNAME);
-                    session.send(new ServerboundChatCommandPacket(COMMAND.startsWith("/") ? COMMAND.substring(1) : COMMAND));
+                    sendCommand(session, COMMANDS[0]);
                 } else if (packet instanceof ClientboundSystemChatPacket chat) {
                     String content = PlainTextComponentSerializer.plainText().serialize(chat.getContent());
                     System.out.println("headless: received=" + content);
-                    if (content.contains(EXPECTED)) {
+                    if (content.contains(EXPECTED[step[0]])) {
+                        step[0]++;
+                        if (step[0] < COMMANDS.length && step[0] < EXPECTED.length) {
+                            sendCommand(session, COMMANDS[step[0]]);
+                            return;
+                        }
                         passed.set(true);
                         session.disconnect(Component.text("headless test complete"));
                         finished.countDown();
@@ -66,5 +72,9 @@ public final class HeadlessClient {
             throw new IllegalStateException("Headless integration assertion failed");
         }
         System.out.println("headless: passed");
+    }
+
+    private static void sendCommand(Session session, String command) {
+        session.send(new ServerboundChatCommandPacket(command.startsWith("/") ? command.substring(1) : command));
     }
 }

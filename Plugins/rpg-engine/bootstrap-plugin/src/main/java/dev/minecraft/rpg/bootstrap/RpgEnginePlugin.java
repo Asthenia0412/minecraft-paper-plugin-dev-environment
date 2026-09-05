@@ -2,13 +2,18 @@ package dev.minecraft.rpg.bootstrap;
 
 import dev.minecraft.rpg.adapter.CharacterRegistry;
 import dev.minecraft.rpg.adapter.RpgCommand;
+import dev.minecraft.rpg.common.LocalEventBus;
+import dev.minecraft.rpg.economy.RewardService;
+import dev.minecraft.rpg.economy.Wallet;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RpgEnginePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
-        getCommand("rpg").setExecutor(new RpgCommand(new CharacterRegistry()));
+        LocalEventBus eventBus = new LocalEventBus();
+        Wallet wallet = new Wallet();
+        new RewardService(eventBus, wallet);
+        getCommand("rpg").setExecutor(new RpgCommand(new CharacterRegistry(), eventBus, wallet));
         getLogger().info("RPG Engine enabled");
     }
 }
-

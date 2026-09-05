@@ -7,6 +7,7 @@ import dev.minecraft.rpg.combat.CombatResult;
 import dev.minecraft.rpg.combat.AttackCommand;
 import dev.minecraft.rpg.combat.CombatApplicationService;
 import dev.minecraft.rpg.common.TraceId;
+import dev.minecraft.rpg.common.EventPublisher;
 import dev.minecraft.rpg.skill.CastResult;
 import dev.minecraft.rpg.skill.SkillDefinition;
 import dev.minecraft.rpg.skill.SkillService;
@@ -27,11 +28,20 @@ public final class RpgCommand implements CommandExecutor {
     private final SkillService skillService = new SkillService(Clock.systemUTC());
     private final SkillDefinition fireball = new SkillDefinition("fireball", 30, 5);
     private final EquipmentRegistry equipmentRegistry = new EquipmentRegistry();
+    private final EventPublisher events;
+    private final dev.minecraft.rpg.economy.Wallet wallet;
 
     public RpgCommand(CharacterRegistry registry) {
+        this(registry, event -> { }, new dev.minecraft.rpg.economy.Wallet());
+    }
+
+    public RpgCommand(CharacterRegistry registry, EventPublisher events,
+                      dev.minecraft.rpg.economy.Wallet wallet) {
         this.registry = registry;
-        this.characterService = new CharacterApplicationService(registry, event -> { }, Clock.systemUTC());
-        this.combatService = new CombatApplicationService(registry, event -> { });
+        this.events = events;
+        this.wallet = wallet;
+        this.characterService = new CharacterApplicationService(registry, events, Clock.systemUTC());
+        this.combatService = new CombatApplicationService(registry, events);
     }
 
     @Override
@@ -49,7 +59,8 @@ public final class RpgCommand implements CommandExecutor {
         }
         if (args.length == 1 && args[0].equalsIgnoreCase("status")) {
             player.sendMessage(Component.text("RPG character health: " + character.health()
-                    + ", attack: " + equipmentRegistry.forPlayer(player.getUniqueId()).totalAttack()));
+                    + ", attack: " + equipmentRegistry.forPlayer(player.getUniqueId()).totalAttack()
+                    + ", coins: " + wallet.balance(character.id())));
             return true;
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("equip")

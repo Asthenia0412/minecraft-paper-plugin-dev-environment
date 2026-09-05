@@ -51,8 +51,8 @@ grep -qE 'Done \([^)]+\)! For help, type "help"' "$LOG" || {
 }
 grep -q 'RPG Engine enabled' "$LOG"
 JAVA_HOME="$HEADLESS_JAVA_HOME" \
-  MC_TEST_COMMAND="rpg cast fireball" \
-  MC_TEST_EXPECTED="RPG skill cast: fireball" \
+  MC_TEST_COMMAND="rpg create|rpg equip iron-sword|rpg cast fireball|rpg attack 100|rpg status" \
+  MC_TEST_EXPECTED="RPG character created: 100|RPG equipped: iron-sword, attack: 7|RPG skill cast: fireball|RPG attack damage: 100, health: 0|RPG character health: 0, attack: 7, coins: 10" \
   "$ROOT_DIR/gradlew" -p "$ROOT_DIR/tools/headless-client" run
 
 echo "Paper integration test passed: ${PAPER_JAR[0]}"

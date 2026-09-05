@@ -19,4 +19,3 @@ public final class Wallet {
         return balances.getOrDefault(characterId, 0);
     }
 }
-
