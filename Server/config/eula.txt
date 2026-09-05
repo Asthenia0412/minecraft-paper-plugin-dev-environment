@@ -1,0 +1,2 @@
+# Generated into Server/runtime by the setup script after explicit acceptance.
+eula=false

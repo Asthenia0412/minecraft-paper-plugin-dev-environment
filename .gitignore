@@ -22,4 +22,5 @@ Client/logs/
 
 # Keep the feedback contract visible, but ignore bulky raw output
 feedback/latest/raw/
+feedback/latest/*
 feedback/history/*/raw/

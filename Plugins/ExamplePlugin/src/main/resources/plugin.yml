@@ -1,0 +1,9 @@
+name: ExamplePlugin
+version: '${version}'
+main: dev.minecraft.example.ExamplePlugin
+api-version: '1.21'
+description: Deterministic plugin used by the local Paper test environment.
+commands:
+  devkit:
+    description: Reports the plugin health status.
+    usage: /devkit status
