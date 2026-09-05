@@ -3,6 +3,12 @@ Server/runtime/
 Server/plugins/*.jar
 Client/runtime/
 Client/logs/
+libraries/
+cache/
+versions/
+eula.txt
+server.properties
+Plugins/.paper-remapped/
 
 # Java and Gradle outputs
 **/build/

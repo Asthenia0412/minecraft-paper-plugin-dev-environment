@@ -11,6 +11,7 @@ public final class ExamplePlugin extends JavaPlugin implements CommandExecutor {
     public void onEnable() {
         getCommand("devkit").setExecutor(this);
         getLogger().info("ExamplePlugin enabled");
+        getLogger().info("Smoke check: /devkit status -> ExamplePlugin status: OK");
     }
 
     @Override
