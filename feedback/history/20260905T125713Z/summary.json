@@ -1,0 +1,13 @@
+{
+  "feedback_schema_version": 1,
+  "run_id": "20260905T125713Z",
+  "run_kind": "build",
+  "commit": {"head": "8ac0db094fdcd3390394e5ddf9e5fad9964c00d9", "dirty": false},
+  "started_at": "2026-09-05T12:57:13Z",
+  "finished_at": "2026-09-05T12:57:14Z",
+  "status": "passed",
+  "steps": [{"name":"build","status":"passed","started_at":null,"finished_at":null,"exit_code":0},{"name":"unit_test","status":"passed","started_at":null,"finished_at":null,"exit_code":0},{"name":"deploy","status":"passed","started_at":null,"finished_at":null,"exit_code":0}],
+  "artifact": {"path":"/Users/yancy/Documents/ChatGPT/Minecraft/Server/runtime/plugins/ExamplePlugin-0.1.0.jar","sha256":"832d72410013a9a2d71b2d09d0eae2451a751930ae796688063b2aec549d7714"},
+  "server": {"log":"/Users/yancy/Documents/ChatGPT/Minecraft/Server/runtime/server.log","ready":true,"exit_code":0},
+  "errors": ["Detailed step records are attached by the pipeline."]
+}
