@@ -1,5 +1,6 @@
 dependencies {
     implementation(project(":common"))
+    implementation(project(":identity-module"))
     implementation(project(":character-module"))
     implementation(project(":combat-module"))
     implementation(project(":skill-module"))

@@ -1,6 +1,7 @@
 rootProject.name = "rpg-engine"
 
 include(":common")
+include(":identity-module")
 include(":character-module")
 include(":combat-module")
 include(":skill-module")

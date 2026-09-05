@@ -6,6 +6,7 @@ the runtime; RPG state and rules are owned by the engine.
 ## Boundaries
 
 - `common`: trace IDs, domain events, and event publication contracts.
+- `identity-module`: stable player identity and display-name value object.
 - `character-module`: character state, creation use case, and repository port.
 - `combat-module`: attack command, damage rules, and defeat events.
 - `skill-module`: data-driven skill definitions and owner-scoped cooldowns.
@@ -39,4 +40,3 @@ For each feature, identify its bounded context, Gradle module, domain model,
 command/query boundary, domain event flow, and test strategy before adding the
 Paper adapter. Keep game content in configuration files such as `item.yml` and
 `skill.yml`, not in Minecraft-native attributes.
-
