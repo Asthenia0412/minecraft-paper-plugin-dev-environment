@@ -27,6 +27,9 @@ development.
 EULA_ACCEPTED=true ./tools/pipeline.sh
 ```
 
+The integration step uses `tools/headless-client` to connect as `DevPlayer` and
+execute `/devkit status` without opening a graphical client.
+
 The pipeline runs the plugin tests, deploys the JAR to
 `Server/runtime/plugins/`, starts Paper in offline mode, checks
 `/devkit status`, stops the owned server process, and writes a summary under

@@ -3,6 +3,10 @@ set -Eeuo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RUNTIME="$ROOT_DIR/Server/runtime"
+HEADLESS_JAVA_HOME="${JAVA_HOME:-}"
+if command -v /usr/libexec/java_home >/dev/null 2>&1 && java -version 2>&1 | head -1 | grep -q 'version "25'; then
+  HEADLESS_JAVA_HOME="$(/usr/libexec/java_home -v 21)"
+fi
 if [[ "${EULA_ACCEPTED:-false}" != "true" ]]; then
   echo "Set EULA_ACCEPTED=true to accept the Minecraft EULA explicitly." >&2
   exit 2
@@ -47,5 +51,7 @@ grep -qE 'Done \([^)]+\)! For help, type "help"' "$LOG" || {
 }
 grep -q 'ExamplePlugin enabled' "$LOG"
 grep -q 'Smoke check: /devkit status -> ExamplePlugin status: OK' "$LOG"
+JAVA_HOME="$HEADLESS_JAVA_HOME" \
+  "$ROOT_DIR/gradlew" -p "$ROOT_DIR/tools/headless-client" run
 
 echo "Paper integration test passed: ${PAPER_JAR[0]}"
