@@ -6,6 +6,9 @@ dependencies {
     implementation(project(":item-module"))
     implementation(project(":economy-module"))
     implementation(project(":infrastructure-module"))
+    implementation(project(":quest-module"))
+    implementation(project(":dungeon-module"))
+    implementation(project(":world-module"))
     implementation(project(":minecraft-adapter"))
     compileOnly("io.papermc.paper:paper-api:${providers.gradleProperty("paper_api_version").get()}")
 }
