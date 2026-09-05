@@ -17,5 +17,8 @@ public final class Equipment {
     public int totalAttack() {
         return items.values().stream().mapToInt(ItemDefinition::attack).sum();
     }
-}
 
+    public java.util.Collection<ItemDefinition> items() {
+        return java.util.List.copyOf(items.values());
+    }
+}

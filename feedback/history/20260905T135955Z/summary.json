@@ -1,0 +1,13 @@
+{
+  "feedback_schema_version": 1,
+  "run_id": "20260905T135955Z",
+  "run_kind": "integration",
+  "commit": {"head": "95b755b6bb66c3caed6d0e3909abf35b1a6279d3", "dirty": true},
+  "started_at": "2026-09-05T13:59:55Z",
+  "finished_at": "2026-09-05T13:59:59Z",
+  "status": "failed",
+  "steps": [{"name":"build","status":"failed","started_at":null,"finished_at":null,"exit_code":1},{"name":"unit_test","status":"failed","started_at":null,"finished_at":null,"exit_code":1},{"name":"deploy","status":"failed","started_at":null,"finished_at":null,"exit_code":1},{"name":"server_readiness","status":"failed","started_at":null,"finished_at":null,"exit_code":1},{"name":"plugin_enable","status":"failed","started_at":null,"finished_at":null,"exit_code":1},{"name":"smoke_check","status":"failed","started_at":null,"finished_at":null,"exit_code":1},{"name":"cleanup","status":"failed","started_at":null,"finished_at":null,"exit_code":1}],
+  "artifact": {"path":"/Users/yancy/Documents/ChatGPT/Minecraft/Server/runtime/plugins/rpg-engine-plugin-0.1.0.jar","sha256":"52c2bd426ad25f25222fc530c82bd94b7f2e2731b463e7ee1ea574a328d8320a"},
+  "server": {"log":"/Users/yancy/Documents/ChatGPT/Minecraft/Server/runtime/server.log","ready":true,"exit_code":0},
+  "errors": ["Detailed step records are attached by the pipeline."]
+}

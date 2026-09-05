@@ -27,7 +27,7 @@ public final class RpgCommand implements CommandExecutor {
     private final CombatApplicationService combatService;
     private final SkillService skillService = new SkillService(Clock.systemUTC());
     private final SkillDefinition fireball = new SkillDefinition("fireball", 30, 5);
-    private final EquipmentRegistry equipmentRegistry = new EquipmentRegistry();
+    private final EquipmentRegistry equipmentRegistry;
     private final EventPublisher events;
     private final dev.minecraft.rpg.economy.Wallet wallet;
 
@@ -37,9 +37,15 @@ public final class RpgCommand implements CommandExecutor {
 
     public RpgCommand(CharacterRegistry registry, EventPublisher events,
                       dev.minecraft.rpg.economy.Wallet wallet) {
+        this(registry, events, wallet, new EquipmentRegistry());
+    }
+
+    public RpgCommand(CharacterRegistry registry, EventPublisher events,
+                      dev.minecraft.rpg.economy.Wallet wallet, EquipmentRegistry equipmentRegistry) {
         this.registry = registry;
         this.events = events;
         this.wallet = wallet;
+        this.equipmentRegistry = equipmentRegistry;
         this.characterService = new CharacterApplicationService(registry, events, Clock.systemUTC());
         this.combatService = new CombatApplicationService(registry, events);
     }
@@ -67,6 +73,7 @@ public final class RpgCommand implements CommandExecutor {
                 && args[1].equalsIgnoreCase("iron-sword")) {
             equipmentRegistry.forPlayer(player.getUniqueId()).equip(
                     new ItemDefinition("iron-sword", EquipmentSlot.MAIN_HAND, 7));
+            equipmentRegistry.save(player.getUniqueId());
             player.sendMessage(Component.text("RPG equipped: iron-sword, attack: 7"));
             return true;
         }

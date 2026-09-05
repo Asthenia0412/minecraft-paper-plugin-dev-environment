@@ -6,6 +6,7 @@ import dev.minecraft.rpg.common.LocalEventBus;
 import dev.minecraft.rpg.economy.RewardService;
 import dev.minecraft.rpg.economy.Wallet;
 import dev.minecraft.rpg.infrastructure.FileCharacterRepository;
+import dev.minecraft.rpg.infrastructure.FileEquipmentRepository;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RpgEnginePlugin extends JavaPlugin {
@@ -19,7 +20,10 @@ public final class RpgEnginePlugin extends JavaPlugin {
         new RewardService(eventBus, wallet);
         CharacterRegistry characters = new CharacterRegistry(
                 new FileCharacterRepository(getDataFolder().toPath().resolve("characters.properties")));
-        getCommand("rpg").setExecutor(new RpgCommand(characters, eventBus, wallet));
+        RpgCommand command = new RpgCommand(characters, eventBus, wallet,
+                new dev.minecraft.rpg.adapter.EquipmentRegistry(new FileEquipmentRepository(
+                        getDataFolder().toPath().resolve("equipment.properties"))));
+        getCommand("rpg").setExecutor(command);
         getLogger().info("RPG Engine enabled");
     }
 }
