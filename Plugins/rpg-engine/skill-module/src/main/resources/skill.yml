@@ -1,0 +1,5 @@
+skills:
+  fireball:
+    cooldown-seconds: 30
+    resource-cost: 5
+

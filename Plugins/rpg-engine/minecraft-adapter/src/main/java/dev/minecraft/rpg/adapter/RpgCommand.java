@@ -7,6 +7,9 @@ import dev.minecraft.rpg.combat.CombatResult;
 import dev.minecraft.rpg.combat.CombatService;
 import dev.minecraft.rpg.common.EventPublisher;
 import dev.minecraft.rpg.common.TraceId;
+import dev.minecraft.rpg.skill.CastResult;
+import dev.minecraft.rpg.skill.SkillDefinition;
+import dev.minecraft.rpg.skill.SkillService;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,6 +22,8 @@ public final class RpgCommand implements CommandExecutor {
     private final CharacterRegistry registry;
     private final CharacterApplicationService characterService;
     private final CombatService combatService = new CombatService();
+    private final SkillService skillService = new SkillService(Clock.systemUTC());
+    private final SkillDefinition fireball = new SkillDefinition("fireball", 30, 5);
 
     public RpgCommand(CharacterRegistry registry) {
         this.registry = registry;
@@ -53,7 +58,17 @@ public final class RpgCommand implements CommandExecutor {
                 return true;
             }
         }
-        player.sendMessage(Component.text("Usage: /rpg status | /rpg attack <damage>"));
+        if (args.length == 2 && args[0].equalsIgnoreCase("cast")
+                && args[1].equalsIgnoreCase("fireball")) {
+            CastResult result = skillService.cast(fireball, TraceId.create());
+            if (result.success()) {
+                player.sendMessage(Component.text("RPG skill cast: fireball"));
+            } else {
+                player.sendMessage(Component.text("RPG skill cooldown: " + result.remainingCooldownSeconds()));
+            }
+            return true;
+        }
+        player.sendMessage(Component.text("Usage: /rpg create | /rpg status | /rpg attack <damage> | /rpg cast fireball"));
         return true;
     }
 }
