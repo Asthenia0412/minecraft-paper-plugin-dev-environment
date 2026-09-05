@@ -12,11 +12,11 @@ public final class RpgEnginePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         LocalEventBus eventBus = new LocalEventBus();
-        Wallet wallet = new Wallet();
-        new RewardService(eventBus, wallet);
         if (!getDataFolder().exists()) {
             getDataFolder().mkdirs();
         }
+        Wallet wallet = new Wallet(getDataFolder().toPath().resolve("wallet.properties"));
+        new RewardService(eventBus, wallet);
         CharacterRegistry characters = new CharacterRegistry(
                 new FileCharacterRepository(getDataFolder().toPath().resolve("characters.properties")));
         getCommand("rpg").setExecutor(new RpgCommand(characters, eventBus, wallet));
