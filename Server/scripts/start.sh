@@ -17,7 +17,7 @@ if [[ -s "$RUNTIME/server.pid" ]] && kill -0 "$(<"$RUNTIME/server.pid")" 2>/dev/
   exit 0
 fi
 
-(cd "$RUNTIME" && exec java -jar "$(basename "$PAPER_JAR")" --nogui) >"$RUNTIME/server.log" 2>&1 &
+(cd "$RUNTIME" && exec nohup java -jar "$(basename "$PAPER_JAR")" --nogui) >"$RUNTIME/server.log" 2>&1 < /dev/null &
 echo $! > "$RUNTIME/server.pid"
 for _ in {1..60}; do
   if grep -qE 'Done \([^)]+\)! For help, type "help"' "$RUNTIME/server.log"; then
