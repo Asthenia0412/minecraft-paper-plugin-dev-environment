@@ -10,6 +10,8 @@ import dev.minecraft.rpg.common.TraceId;
 import dev.minecraft.rpg.skill.CastResult;
 import dev.minecraft.rpg.skill.SkillDefinition;
 import dev.minecraft.rpg.skill.SkillService;
+import dev.minecraft.rpg.item.EquipmentSlot;
+import dev.minecraft.rpg.item.ItemDefinition;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,6 +26,7 @@ public final class RpgCommand implements CommandExecutor {
     private final CombatService combatService = new CombatService();
     private final SkillService skillService = new SkillService(Clock.systemUTC());
     private final SkillDefinition fireball = new SkillDefinition("fireball", 30, 5);
+    private final EquipmentRegistry equipmentRegistry = new EquipmentRegistry();
 
     public RpgCommand(CharacterRegistry registry) {
         this.registry = registry;
@@ -44,7 +47,15 @@ public final class RpgCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 1 && args[0].equalsIgnoreCase("status")) {
-            player.sendMessage(Component.text("RPG character health: " + character.health()));
+            player.sendMessage(Component.text("RPG character health: " + character.health()
+                    + ", attack: " + equipmentRegistry.forPlayer(player.getUniqueId()).totalAttack()));
+            return true;
+        }
+        if (args.length == 2 && args[0].equalsIgnoreCase("equip")
+                && args[1].equalsIgnoreCase("iron-sword")) {
+            equipmentRegistry.forPlayer(player.getUniqueId()).equip(
+                    new ItemDefinition("iron-sword", EquipmentSlot.MAIN_HAND, 7));
+            player.sendMessage(Component.text("RPG equipped: iron-sword, attack: 7"));
             return true;
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("attack")) {

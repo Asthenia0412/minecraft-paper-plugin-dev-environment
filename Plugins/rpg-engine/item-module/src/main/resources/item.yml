@@ -1,0 +1,5 @@
+items:
+  iron-sword:
+    slot: main_hand
+    attack: 7
+
