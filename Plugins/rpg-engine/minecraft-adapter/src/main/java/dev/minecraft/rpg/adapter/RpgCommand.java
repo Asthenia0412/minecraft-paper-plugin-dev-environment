@@ -4,8 +4,8 @@ import dev.minecraft.rpg.character.Character;
 import dev.minecraft.rpg.character.application.CharacterApplicationService;
 import dev.minecraft.rpg.character.application.CreateCharacterCommand;
 import dev.minecraft.rpg.combat.CombatResult;
-import dev.minecraft.rpg.combat.CombatService;
-import dev.minecraft.rpg.common.EventPublisher;
+import dev.minecraft.rpg.combat.AttackCommand;
+import dev.minecraft.rpg.combat.CombatApplicationService;
 import dev.minecraft.rpg.common.TraceId;
 import dev.minecraft.rpg.skill.CastResult;
 import dev.minecraft.rpg.skill.SkillDefinition;
@@ -23,7 +23,7 @@ import java.time.Clock;
 public final class RpgCommand implements CommandExecutor {
     private final CharacterRegistry registry;
     private final CharacterApplicationService characterService;
-    private final CombatService combatService = new CombatService();
+    private final CombatApplicationService combatService;
     private final SkillService skillService = new SkillService(Clock.systemUTC());
     private final SkillDefinition fireball = new SkillDefinition("fireball", 30, 5);
     private final EquipmentRegistry equipmentRegistry = new EquipmentRegistry();
@@ -31,6 +31,7 @@ public final class RpgCommand implements CommandExecutor {
     public RpgCommand(CharacterRegistry registry) {
         this.registry = registry;
         this.characterService = new CharacterApplicationService(registry, event -> { }, Clock.systemUTC());
+        this.combatService = new CombatApplicationService(registry, event -> { });
     }
 
     @Override
@@ -60,7 +61,8 @@ public final class RpgCommand implements CommandExecutor {
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("attack")) {
             try {
-                CombatResult result = combatService.attack(character, Integer.parseInt(args[1]));
+                CombatResult result = combatService.attack(new AttackCommand(
+                        character.id(), Integer.parseInt(args[1]), TraceId.create()));
                 player.sendMessage(Component.text("RPG attack damage: " + result.damageApplied()
                         + ", health: " + character.health()));
                 return true;
