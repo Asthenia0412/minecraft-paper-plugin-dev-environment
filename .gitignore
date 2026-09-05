@@ -1,0 +1,25 @@
+# Minecraft runtime and downloaded artifacts
+Server/runtime/
+Server/plugins/*.jar
+Client/runtime/
+Client/logs/
+
+# Java and Gradle outputs
+**/build/
+.gradle/
+*.class
+
+# Local logs and secrets
+*.log
+.env
+.env.*
+
+# OS and IDE files
+.DS_Store
+.idea/
+*.iml
+.vscode/
+
+# Keep the feedback contract visible, but ignore bulky raw output
+feedback/latest/raw/
+feedback/history/*/raw/
