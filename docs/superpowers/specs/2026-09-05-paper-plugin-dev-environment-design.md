@@ -10,9 +10,15 @@ machine-readable feedback that can guide subsequent Agent iterations.
 
 ## Scope and assumptions
 
-- The initial target is Paper 1.21.11 with Java 21, pinned in repository
-  configuration. The version is intentionally centralized so it can be changed
-  without restructuring the project.
+- The initial target is Paper 1.21.11 with Java 21. The implementation must
+  select one exact stable Paper build from the official Paper downloads API and
+  record its build number, download URL, and SHA-256 in a tracked lock file;
+  neither local setup nor CI may resolve a floating `latest` build. The
+  version is centralized so it can be changed without restructuring the
+  project.
+- The implementation also commits a Gradle Wrapper version and verifies the
+  Paper JAR checksum before use. The official Paper repository/API is the only
+  download source in the first version.
 - The server is for local testing only and uses `online-mode=false`.
 - Bukkit-compatible plugins are the default API surface; Paper-specific APIs
   may be added by an individual plugin when needed.
@@ -25,8 +31,7 @@ machine-readable feedback that can guide subsequent Agent iterations.
 
 ```text
 Server/
-  runtime/              # generated Paper server runtime
-  plugins/              # deployed plugin JARs, generated at build time
+  runtime/              # generated Paper server runtime; the only deploy target
   config/               # tracked server configuration templates
   scripts/              # server lifecycle helpers
 Client/
@@ -59,12 +64,14 @@ the root version configuration.
 
 ### Server runtime
 
-The server bootstrap script ensures the configured Paper version is available,
-creates the runtime directory, installs tracked configuration templates, and
-starts Paper with the required Java version. Runtime state is isolated below
-`Server/runtime`; the deploy target is `Server/runtime/plugins` (with a tracked
-`Server/plugins` compatibility link or documented alias only if needed by the
-chosen local layout).
+The server bootstrap script ensures the locked Paper version is available,
+creates `Server/runtime`, installs tracked configuration templates, and starts
+Paper with the required Java version. `Server/runtime/plugins` is the only
+plugin deployment target; no second `Server/plugins` directory or alias is
+used. The bootstrap writes a PID file, waits for the exact server-ready log
+marker, and fails on timeout. The stop routine sends a graceful stop, waits a
+bounded time, then reports failure if the owned PID remains alive; it never
+kills unrelated Java processes.
 
 The server configuration must set `online-mode=false`, disable accidental
 production-facing behavior, and expose a deterministic test port. The EULA
@@ -90,8 +97,14 @@ Each run receives a timestamp and source commit identifier. Feedback includes
 build status, test status, deployed artifact checksum, server exit status,
 plugin enable/disable status, and selected error/warning lines. Raw logs stay
 local or are uploaded as CI artifacts; committed feedback is a redacted,
-bounded summary in JSON and Markdown. A failed step stops downstream steps,
-while cleanup and feedback collection run regardless.
+bounded summary in JSON and Markdown. The JSON contract is versioned as
+`feedback_schema_version: 1` and requires `run_id`, `commit`, `started_at`,
+`finished_at`, `status` (`passed` or `failed`), `steps`, `artifact`, `server`,
+and `errors`; each step has `name`, `status`, `started_at`, `finished_at`, and
+`exit_code`. A run is `passed` only when build, deployment, server readiness,
+plugin enablement, smoke checks, and cleanup all pass. A failed step stops
+downstream checks, while cleanup and feedback collection run regardless. Raw
+logs are truncated to a configured maximum and secrets are redacted.
 
 ## GitHub workflow
 
@@ -101,6 +114,10 @@ while cleanup and feedback collection run regardless.
 - `integration-test.yml` runs the same build-and-deploy flow in a clean Linux
   runner, starts Paper in offline mode, runs smoke checks, and uploads raw logs
   plus the normalized feedback summary.
+- Local runs copy the normalized summary into `feedback/history/<run_id>/` for
+  an explicit developer/Agent commit. CI treats the summary and raw logs as
+  workflow artifacts and does not push commits; this keeps CI credentials out
+  of the repository while preserving every accepted iteration in Git history.
 - Local commits are the source of truth for changes. Generated runtime files
   and credentials are excluded by `.gitignore`; no GitHub token is stored in
   the repository.
@@ -112,12 +129,12 @@ The first implementation is complete when:
 1. The three requested top-level directories exist and are documented.
 2. `Plugins/ExamplePlugin` compiles and its unit test passes with the pinned
    Java/Gradle toolchain.
-3. A local build copies exactly one versioned plugin JAR into the Paper server
-   plugin directory.
+3. A local build copies exactly one versioned plugin JAR into
+   `Server/runtime/plugins/`, the sole deployment directory.
 4. The server starts in offline mode, loads the plugin, and can be stopped by
    the pipeline without leaving a stale process.
-5. A successful and a failing run both produce feedback summaries with a
-   commit identifier and actionable status fields.
+5. A successful and a failing run both produce schema-versioned feedback
+   summaries with a commit identifier and actionable status fields.
 6. GitHub Actions can reproduce plugin build and headless integration testing.
 7. `git status` remains clean after a successful run except for intentionally
    generated feedback files selected for commit.
