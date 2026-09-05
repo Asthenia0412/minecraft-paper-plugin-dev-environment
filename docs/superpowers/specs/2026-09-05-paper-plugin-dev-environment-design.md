@@ -19,6 +19,10 @@ machine-readable feedback that can guide subsequent Agent iterations.
 - The implementation also commits a Gradle Wrapper version and verifies the
   Paper JAR checksum before use. The official Paper repository/API is the only
   download source in the first version.
+- The build uses the Temurin Java 21 distribution. Gradle plugins and project
+  dependencies are version-pinned and dependency locking is enabled; GitHub
+  Actions references are pinned to commit SHAs. These pins define the
+  reproducibility boundary for the first release.
 - The server is for local testing only and uses `online-mode=false`.
 - Bukkit-compatible plugins are the default API surface; Paper-specific APIs
   may be added by an individual plugin when needed.
@@ -93,7 +97,10 @@ build plugin -> run unit tests -> deploy JAR -> start Paper -> run checks
 -> collect feedback -> stop server -> write summary
 ```
 
-Each run receives a timestamp and source commit identifier. Feedback includes
+Each run receives a timestamp and source commit identifier. For a clean tree,
+`commit` is `HEAD`; for a dirty local tree, the summary records `HEAD` plus a
+hash of the uncommitted diff and `dirty: true`, so results cannot be confused
+with a committed revision. Feedback includes
 build status, test status, deployed artifact checksum, server exit status,
 plugin enable/disable status, and selected error/warning lines. Raw logs stay
 local or are uploaded as CI artifacts; committed feedback is a redacted,
@@ -101,7 +108,8 @@ bounded summary in JSON and Markdown. The JSON contract is versioned as
 `feedback_schema_version: 1` and requires `run_id`, `commit`, `started_at`,
 `finished_at`, `status` (`passed` or `failed`), `steps`, `artifact`, `server`,
 and `errors`; each step has `name`, `status`, `started_at`, `finished_at`, and
-`exit_code`. A run is `passed` only when build, deployment, server readiness,
+`exit_code`. Step status is one of `passed`, `failed`, or `skipped`; skipped
+steps have a JSON `null` exit code. A run is `passed` only when build, deployment, server readiness,
 plugin enablement, smoke checks, and cleanup all pass. A failed step stops
 downstream checks, while cleanup and feedback collection run regardless. Raw
 logs are truncated to a configured maximum and secrets are redacted.
@@ -109,15 +117,20 @@ logs are truncated to a configured maximum and secrets are redacted.
 ## GitHub workflow
 
 - `build-plugin.yml` runs on pushes and pull requests, checks Java/Gradle,
-  compiles the plugin, runs unit tests, and publishes the JAR as a workflow
-  artifact.
+  compiles the plugin, runs unit tests, generates the schema-versioned feedback
+  summary, and publishes the JAR plus summary as workflow artifacts.
 - `integration-test.yml` runs the same build-and-deploy flow in a clean Linux
   runner, starts Paper in offline mode, runs smoke checks, and uploads raw logs
   plus the normalized feedback summary.
 - Local runs copy the normalized summary into `feedback/history/<run_id>/` for
-  an explicit developer/Agent commit. CI treats the summary and raw logs as
+  an explicit developer/Agent commit; `feedback/latest/` is regenerated on
+  every local run and is ignored unless deliberately selected for review. CI
+  treats the summary and raw logs as
   workflow artifacts and does not push commits; this keeps CI credentials out
   of the repository while preserving every accepted iteration in Git history.
+- Before deployment, the pipeline removes only the previously generated JAR
+  for this plugin's artifact name, then copies the new versioned JAR. It never
+  deletes unrelated plugins.
 - Local commits are the source of truth for changes. Generated runtime files
   and credentials are excluded by `.gitignore`; no GitHub token is stored in
   the repository.
