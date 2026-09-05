@@ -13,6 +13,7 @@ the runtime; RPG state and rules are owned by the engine.
 - `item-module`: item definitions and equipment aggregate.
 - `economy-module`: wallet and defeat rewards.
 - `quest-module`, `dungeon-module`, `world-module`: supporting bounded contexts.
+- `achievement-module`: achievement unlock rules.
 - `infrastructure-module`: file-backed repository adapters.
 - `minecraft-adapter`: Paper command and runtime translation layer.
 - `bootstrap-plugin`: composition root producing `rpg-engine-plugin.jar`.
