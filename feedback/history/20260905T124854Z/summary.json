@@ -1,0 +1,13 @@
+{
+  "feedback_schema_version": 1,
+  "run_id": "20260905T124854Z",
+  "run_kind": "integration",
+  "commit": {"head": "a742392b10a221c6170d972b908471c94c638d94", "dirty": ""},
+  "started_at": "2026-09-05T12:48:54Z",
+  "finished_at": "2026-09-05T12:48:54Z",
+  "status": "passed",
+  "steps": [],
+  "artifact": null,
+  "server": null,
+  "errors": ["Detailed step records are attached by the pipeline."]
+}
