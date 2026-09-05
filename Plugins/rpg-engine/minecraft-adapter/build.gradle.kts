@@ -5,5 +5,6 @@ dependencies {
     implementation(project(":skill-module"))
     implementation(project(":item-module"))
     implementation(project(":economy-module"))
+    implementation(project(":infrastructure-module"))
     compileOnly("io.papermc.paper:paper-api:${providers.gradleProperty("paper_api_version").get()}")
 }

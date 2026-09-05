@@ -10,10 +10,21 @@ import java.util.UUID;
 
 public final class CharacterRegistry implements CharacterRepository {
     private final Map<UUID, Character> characters = new HashMap<>();
+    private final CharacterRepository persistence;
+
+    public CharacterRegistry() {
+        this.persistence = null;
+    }
+
+    public CharacterRegistry(CharacterRepository persistence) {
+        this.persistence = persistence;
+    }
 
     public Character getOrCreate(UUID playerId) {
-        return characters.computeIfAbsent(playerId,
-                id -> Character.create(new CharacterId(id.toString()), 100));
+        return characters.computeIfAbsent(playerId, id -> persistence == null
+                ? Character.create(new CharacterId(id.toString()), 100)
+                : persistence.findById(new CharacterId(id.toString()))
+                    .orElseGet(() -> Character.create(new CharacterId(id.toString()), 100)));
     }
 
     @Override
@@ -24,5 +35,8 @@ public final class CharacterRegistry implements CharacterRepository {
     @Override
     public void save(Character character) {
         characters.put(UUID.fromString(character.id().value()), character);
+        if (persistence != null) {
+            persistence.save(character);
+        }
     }
 }

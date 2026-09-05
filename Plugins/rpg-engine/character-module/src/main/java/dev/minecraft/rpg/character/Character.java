@@ -18,6 +18,19 @@ public final class Character {
         return new Character(id, maxHealth);
     }
 
+    public static Character restore(CharacterId id, int maxHealth, int health) {
+        Character character = new Character(id, maxHealth);
+        if (health < 0 || health > maxHealth) {
+            throw new IllegalArgumentException("Health outside character bounds");
+        }
+        character.health = health;
+        return character;
+    }
+
+    public int maxHealth() {
+        return maxHealth;
+    }
+
     public CharacterId id() {
         return id;
     }
@@ -35,4 +48,3 @@ public final class Character {
         return new DamageResult(applied, health == 0);
     }
 }
-
