@@ -15,7 +15,4 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./tools/build-and-deploy.sh
-      - run: EULA_ACCEPTED=true ./tools/run-test.sh
-      - if: always()
-        run: ./tools/collect-feedback.sh
+      - run: EULA_ACCEPTED=true ./tools/pipeline.sh

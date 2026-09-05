@@ -23,6 +23,8 @@ development.
 ./gradlew -p Plugins/ExamplePlugin test
 ./tools/build-and-deploy.sh
 ./tools/run-test.sh
+# Full build, deploy, integration test, and final feedback
+EULA_ACCEPTED=true ./tools/pipeline.sh
 ```
 
 The pipeline runs the plugin tests, deploys the JAR to

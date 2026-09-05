@@ -3,6 +3,7 @@ Server/runtime/
 Server/plugins/*.jar
 Client/runtime/
 Client/logs/
+Client/.minecraft/
 libraries/
 cache/
 versions/

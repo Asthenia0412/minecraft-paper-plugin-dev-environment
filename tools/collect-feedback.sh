@@ -6,13 +6,16 @@ RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
 OUT_DIR="$ROOT_DIR/feedback/latest"
 HISTORY_DIR="$ROOT_DIR/feedback/history/$RUN_ID"
 mkdir -p "$OUT_DIR" "$HISTORY_DIR"
+dirty=false
+git -C "$ROOT_DIR" diff --quiet || dirty=true
+head_commit="$(git -C "$ROOT_DIR" rev-parse HEAD 2>/dev/null || echo unknown)"
 
 cat > "$OUT_DIR/summary.json" <<JSON
 {
   "feedback_schema_version": 1,
   "run_id": "$RUN_ID",
   "run_kind": "${RUN_KIND:-build}",
-  "commit": {"head": "$(git -C "$ROOT_DIR" rev-parse HEAD 2>/dev/null || echo unknown)", "dirty": "$(git -C "$ROOT_DIR" diff --quiet || echo true)"},
+  "commit": {"head": "$head_commit", "dirty": $dirty},
   "started_at": "${STARTED_AT:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}",
   "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "status": "${RUN_STATUS:-failed}",
