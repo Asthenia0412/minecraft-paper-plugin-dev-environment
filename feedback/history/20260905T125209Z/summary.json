@@ -1,0 +1,13 @@
+{
+  "feedback_schema_version": 1,
+  "run_id": "20260905T125209Z",
+  "run_kind": "integration",
+  "commit": {"head": "eea256b4918afddb29fd7aecc25e502e744acad3", "dirty": true},
+  "started_at": "2026-09-05T12:52:09Z",
+  "finished_at": "2026-09-05T12:52:26Z",
+  "status": "passed",
+  "steps": [{"name":"build","status":"passed","started_at":null,"finished_at":null,"exit_code":0},{"name":"unit_test","status":"passed","started_at":null,"finished_at":null,"exit_code":0},{"name":"deploy","status":"passed","started_at":null,"finished_at":null,"exit_code":0},{"name":"server_readiness","status":"passed","started_at":null,"finished_at":null,"exit_code":0},{"name":"plugin_enable","status":"passed","started_at":null,"finished_at":null,"exit_code":0},{"name":"smoke_check","status":"passed","started_at":null,"finished_at":null,"exit_code":0},{"name":"cleanup","status":"passed","started_at":null,"finished_at":null,"exit_code":0}],
+  "artifact": {"path":"/Users/yancy/Documents/ChatGPT/Minecraft/Server/runtime/plugins/ExamplePlugin-0.1.0.jar","sha256":"832d72410013a9a2d71b2d09d0eae2451a751930ae796688063b2aec549d7714"},
+  "server": {"log":"/Users/yancy/Documents/ChatGPT/Minecraft/Server/runtime/server.log","ready":true,"exit_code":0},
+  "errors": ["Detailed step records are attached by the pipeline."]
+}
