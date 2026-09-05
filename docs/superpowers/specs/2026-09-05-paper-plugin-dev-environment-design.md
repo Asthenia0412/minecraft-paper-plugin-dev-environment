@@ -94,7 +94,7 @@ The canonical local command is:
 
 ```text
 build plugin -> run unit tests -> deploy JAR -> start Paper -> run checks
--> collect feedback -> stop server -> write summary
+-> stop server -> collect final feedback -> write summary
 ```
 
 Each run receives a timestamp and source commit identifier. For a clean tree,
@@ -105,14 +105,25 @@ build status, test status, deployed artifact checksum, server exit status,
 plugin enable/disable status, and selected error/warning lines. Raw logs stay
 local or are uploaded as CI artifacts; committed feedback is a redacted,
 bounded summary in JSON and Markdown. The JSON contract is versioned as
-`feedback_schema_version: 1` and requires `run_id`, `commit`, `started_at`,
-`finished_at`, `status` (`passed` or `failed`), `steps`, `artifact`, `server`,
-and `errors`; each step has `name`, `status`, `started_at`, `finished_at`, and
-`exit_code`. Step status is one of `passed`, `failed`, or `skipped`; skipped
-steps have a JSON `null` exit code. A run is `passed` only when build, deployment, server readiness,
+`feedback_schema_version: 1` and requires `run_id`, `run_kind`, `commit`,
+`started_at`, `finished_at`, `status`, `steps`, `artifact`, `server`, and
+`errors`. `run_kind` is `build` or `integration`. Each step has `name`,
+`status`, `started_at`, `finished_at`, and `exit_code`. Step status is one of
+`passed`, `failed`, or `skipped`; skipped steps have a JSON `null` exit code.
+For `build` runs, `artifact` is required and `server` is `null`; success means
+the build and unit tests pass. For `integration` runs, both `artifact` and
+`server` are required; success means build, deployment, server readiness,
 plugin enablement, smoke checks, and cleanup all pass. A failed step stops
-downstream checks, while cleanup and feedback collection run regardless. Raw
-logs are truncated to a configured maximum and secrets are redacted.
+downstream checks, while cleanup and the final feedback phase run regardless.
+Raw logs are truncated to a configured maximum and secrets are redacted.
+
+The server listens on `127.0.0.1:25565`. Readiness is the Paper log line
+matching `Done ([^)]+)! For help, type "help"`. The example plugin exposes
+`/devkit status`, which returns a deterministic success response and is the
+headless smoke check used by local and CI integration runs. Timestamps use
+RFC 3339 UTC; dirty-tree fingerprints and artifact checksums use SHA-256.
+Redaction removes values matching common token/password/key environment
+patterns before summaries are written.
 
 ## GitHub workflow
 
