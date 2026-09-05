@@ -8,4 +8,4 @@ if [[ -z "$CLIENT_DIR" || ! -d "$CLIENT_DIR" ]]; then
   exit 2
 fi
 echo "Connect the client at $(<"$ROOT_DIR/Client/config/server-address.txt")"
-echo "Client automation is intentionally delegated to the installed launcher."
+exec "$ROOT_DIR/Client/scripts/launch-cli.sh"
