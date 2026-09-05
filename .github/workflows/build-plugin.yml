@@ -14,4 +14,4 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew -p Plugins/ExamplePlugin test jar
+      - run: ./gradlew -p Plugins/rpg-engine test :bootstrap-plugin:jar

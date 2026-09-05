@@ -1,0 +1,10 @@
+name: RpgEngine
+version: '${version}'
+main: dev.minecraft.rpg.bootstrap.RpgEnginePlugin
+api-version: '1.21'
+description: Modular RPG engine for the local Paper test environment.
+commands:
+  rpg:
+    description: Interact with the RPG engine.
+    usage: /rpg status | /rpg attack <damage>
+

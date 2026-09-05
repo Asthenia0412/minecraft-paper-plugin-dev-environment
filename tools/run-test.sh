@@ -49,9 +49,10 @@ grep -qE 'Done \([^)]+\)! For help, type "help"' "$LOG" || {
   cat "$LOG" >&2
   exit 5
 }
-grep -q 'ExamplePlugin enabled' "$LOG"
-grep -q 'Smoke check: /devkit status -> ExamplePlugin status: OK' "$LOG"
+grep -q 'RPG Engine enabled' "$LOG"
 JAVA_HOME="$HEADLESS_JAVA_HOME" \
+  MC_TEST_COMMAND="rpg status" \
+  MC_TEST_EXPECTED="RPG character health: 100" \
   "$ROOT_DIR/gradlew" -p "$ROOT_DIR/tools/headless-client" run
 
 echo "Paper integration test passed: ${PAPER_JAR[0]}"

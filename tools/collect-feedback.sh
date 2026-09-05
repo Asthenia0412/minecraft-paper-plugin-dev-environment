@@ -21,7 +21,7 @@ else
   steps_json="$(jq -cn --arg s "$step_status" '["build","unit_test","deploy"] | map({name: ., status: $s, started_at: null, finished_at: null, exit_code: (if $s == "passed" then 0 else 1 end)})')"
 fi
 artifact_json=null
-artifact_path="$ROOT_DIR/Server/runtime/plugins/ExamplePlugin-0.1.0.jar"
+artifact_path="$ROOT_DIR/Server/runtime/plugins/rpg-engine-plugin-0.1.0.jar"
 if [[ -f "$artifact_path" ]]; then
   artifact_json="$(jq -cn --arg path "$artifact_path" --arg sha "$(shasum -a 256 "$artifact_path" | awk '{print $1}')" '{path: $path, sha256: $sha}')"
 fi
