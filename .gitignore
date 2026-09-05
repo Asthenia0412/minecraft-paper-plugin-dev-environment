@@ -7,6 +7,7 @@ Client/.minecraft/
 libraries/
 cache/
 versions/
+logs/
 eula.txt
 server.properties
 Plugins/.paper-remapped/
