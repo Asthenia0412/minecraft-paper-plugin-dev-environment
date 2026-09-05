@@ -84,7 +84,7 @@ public final class RpgCommand implements CommandExecutor {
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("cast")
                 && args[1].equalsIgnoreCase("fireball")) {
-            CastResult result = skillService.cast(fireball, TraceId.create());
+            CastResult result = skillService.cast(player.getUniqueId().toString(), fireball, TraceId.create());
             if (result.success()) {
                 player.sendMessage(Component.text("RPG skill cast: fireball"));
             } else {

@@ -12,6 +12,7 @@ if [[ "${EULA_ACCEPTED:-false}" != "true" ]]; then
   exit 2
 fi
 mkdir -p "$RUNTIME/plugins"
+rm -rf "$RUNTIME/plugins/RpgEngine"
 cp "$ROOT_DIR/Server/config/server.properties" "$RUNTIME/server.properties"
 printf 'eula=true\n' > "$RUNTIME/eula.txt"
 

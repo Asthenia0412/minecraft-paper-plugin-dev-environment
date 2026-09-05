@@ -15,13 +15,17 @@ public final class SkillService {
     }
 
     public CastResult cast(SkillDefinition skill, TraceId traceId) {
+        return cast("default", skill, traceId);
+    }
+
+    public CastResult cast(String ownerId, SkillDefinition skill, TraceId traceId) {
         long now = clock.instant().getEpochSecond();
-        long readyAt = cooldowns.getOrDefault(skill.id(), 0L);
+        String cooldownKey = ownerId + ":" + skill.id();
+        long readyAt = cooldowns.getOrDefault(cooldownKey, 0L);
         if (readyAt > now) {
             return new CastResult(false, readyAt - now, traceId);
         }
-        cooldowns.put(skill.id(), now + skill.cooldownSeconds());
+        cooldowns.put(cooldownKey, now + skill.cooldownSeconds());
         return new CastResult(true, 0, traceId);
     }
 }
-

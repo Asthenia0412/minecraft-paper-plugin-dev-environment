@@ -29,6 +29,15 @@ class SkillServiceTest {
         assertTrue(afterCooldown.success());
     }
 
+    @Test
+    void cooldownIsScopedToTheCharacter() {
+        SkillService service = new SkillService(Clock.fixed(Instant.EPOCH, ZoneOffset.UTC));
+        SkillDefinition fireball = new SkillDefinition("fireball", 30, 5);
+
+        assertTrue(service.cast("player-1", fireball, new TraceId("one")).success());
+        assertTrue(service.cast("player-2", fireball, new TraceId("two")).success());
+    }
+
     private static final class MutableClock extends Clock {
         private Instant instant;
 
@@ -39,4 +48,3 @@ class SkillServiceTest {
         @Override public Instant instant() { return instant; }
     }
 }
-
