@@ -11,6 +11,7 @@ mkdir -p "$RUNTIME/plugins"
 cp "$ROOT_DIR/Server/config/server.properties" "$RUNTIME/server.properties"
 printf 'eula=true\n' > "$RUNTIME/eula.txt"
 
+shopt -s nullglob
 PAPER_JAR=("$RUNTIME"/paper-*.jar)
 if (( ${#PAPER_JAR[@]} != 1 )); then
   echo "Paper runtime is not installed. Run the bootstrap step for the locked Paper build first." >&2
