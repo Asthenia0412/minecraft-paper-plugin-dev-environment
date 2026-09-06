@@ -4,6 +4,9 @@ main: dev.minecraft.rpg.bootstrap.RpgEnginePlugin
 api-version: '1.21'
 description: Modular RPG engine for the local Paper test environment.
 commands:
+  luoxia:
+    description: Visit the Luoxia Peak showcase or inspect its status.
+    usage: /luoxia [status]
   rpg:
     description: Interact with the RPG engine.
     usage: /rpg create | /rpg status | /rpg equip iron-sword | /rpg attack <damage> | /rpg cast fireball

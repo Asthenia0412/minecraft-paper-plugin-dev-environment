@@ -25,5 +25,8 @@ public final class RpgEnginePlugin extends JavaPlugin {
                         getDataFolder().toPath().resolve("equipment.properties"))));
         getCommand("rpg").setExecutor(command);
         getLogger().info("RPG Engine enabled");
+        if (Boolean.getBoolean("rpg.showcase")) {
+            getServer().getScheduler().runTask(this, () -> new dev.minecraft.rpg.adapter.LuoxiaWorld(this).open());
+        }
     }
 }
